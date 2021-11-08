@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Engage Video Conference</title>
+</head>
+<body>
+    
+    <h1>ENGAGE VIDEO CONFERENCE</h1>
+    <div id="selectRoom">
+        <label for="room">Type room name</label>
+        <input id="roomNumber" type="text">
+        <button id="goRoom">Go</button>
+    </div>
+
+    <div id="consultingRoom" style="display: none;">    <!--  hidden by default-->
+        <h2 id="callName"></h2>
+        <p>
+            <input id="inputCallName" type="text">
+            <button id="buttonSetName">Set Name</button>
+        </p>
+        <video id="localVideo" autoplay></video> <!-- Setting autoplay to play the video automatically-->
+        <video id="remoteVideo" autoplay></video>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="main.js"></script>
+
+</body>
+</html>
