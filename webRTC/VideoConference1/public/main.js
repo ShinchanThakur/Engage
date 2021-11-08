@@ -7,9 +7,19 @@ let remoteVideo = document.getElementById('remoteVideo')
 let h2CallName = document.getElementById('callName')
 var inputCallName = document.getElementById('inputCallName')
 let btnSetName = document.getElementById('buttonSetName')
-
+let divChatRoom = document.getElementById('chatRoom')
+let chatList = document.getElementById('dynamic-list')
+let chatBox = document.getElementById('chatBox')
+let btnChatSend = document.getElementById('chatSendButton')
+let divRoomNameSetter = document.getElementById('roomNameSetter')
 
 let roomNumber, localStream, remoteStream, rtcPeerConnection, isCaller, dataChannel
+
+// function removeItem(){
+//     var item = document.getElementById(chatBox.value)
+//     if(item)
+//         chatList.removeChild(item)
+// }
 
 const iceServers = {    //Required before rtcPeerConnection
     'iceServer': [      //Array of STUN server objects
@@ -31,18 +41,31 @@ const iceServers = {    //Required before rtcPeerConnection
       } else {
             roomNumber = inputRoomNumber.value
             socket.emit('create or join', roomNumber)   //Sending message to the signalling server
-            divSelectRoom.style = "display: none;"
-            divConsultingRoom.style = "display: block;"
+            divSelectRoom.style = "display: none"
+            divConsultingRoom.style = "display: block"
       }
   }
 
-  btnSetName.onclick = function () {
-        if(inputCallName.value === '') {
-            alert("Please type a call name")
-        } else {
-            dataChannel.send(inputCallName.value)   //Sending message through data channel
-            h2CallName.innerText = inputCallName.value
-        }
+//   btnSetName.onclick = function () {
+//         if(inputCallName.value === '') {
+//             alert("Please type a call name")
+//         } else {
+//             dataChannel.send(inputCallName.value)   //Sending message through data channel
+//             h2CallName.innerText = inputCallName.value
+//             divRoomNameSetter.style = "display: none"
+//         }
+//     }
+
+    function addChat(chatText){
+        var li = document.createElement("li")
+        li.setAttribute('id', chatText)
+        li.appendChild(document.createTextNode(chatText))
+        chatList.appendChild(li)
+    }
+
+    btnChatSend.onclick = function () {
+        addChat(chatBox.value)
+        dataChannel.send(chatBox.value)
     }
 
   socket.on('created', function (room) {    //For first user
@@ -96,9 +119,13 @@ const iceServers = {    //Required before rtcPeerConnection
         //Now sending offer
 
         dataChannel = rtcPeerConnection.createDataChannel(roomNumber)   //Creating data channel on the caller side
+        // divRoomNameSetter.style = "display: block"
+        divChatRoom.style = "display: block"
         console.log('dataChannel bann gaya')
         dataChannel.onmessage = event => {      //This event will be triggered when dataChannel has a message
-            h2CallName.innerText = event.data
+            // h2CallName.innerText = event.data
+            // divRoomNameSetter.style = "display: none"
+            addChat(event.data)
         }
 
         rtcPeerConnection.createOffer()     //Some of these processes will keep on going, so it is better to make this async await
@@ -134,11 +161,15 @@ socket.on('offer', function(event) {
         rtcPeerConnection.setRemoteDescription(new RTCSessionDescription(event))    //Setting session description of the remote user
         
         console.log('dataChannel assign nahi ho raha hai')
+        // divRoomNameSetter.style = "display: block"
+        divChatRoom.style = "display: block"
         rtcPeerConnection.ondatachannel = event => {    //Receiving data channel created by other user
             dataChannel = event.channel                 //Setting data channel of local to data channel of remote
             console.log('dataChannel assign ho gaya')
             dataChannel.onmessage = event => {
-                h2CallName.innerText = event.data
+                // h2CallName.innerText = event.data
+                // divRoomNameSetter.style = "display: none"
+                addChat(event.data)
             }
         }
 
