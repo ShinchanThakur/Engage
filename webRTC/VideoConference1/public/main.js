@@ -125,7 +125,7 @@ const iceServers = {    //Required before rtcPeerConnection
         dataChannel.onmessage = event => {      //This event will be triggered when dataChannel has a message
             // h2CallName.innerText = event.data
             // divRoomNameSetter.style = "display: none"
-            addChat(event.data)
+            addChat("Other User: " + event.data)
         }
 
         rtcPeerConnection.createOffer()     //Some of these processes will keep on going, so it is better to make this async await
@@ -169,7 +169,7 @@ socket.on('offer', function(event) {
             dataChannel.onmessage = event => {
                 // h2CallName.innerText = event.data
                 // divRoomNameSetter.style = "display: none"
-                addChat(event.data)
+                addChat("Other User: " + event.data)
             }
         }
 
