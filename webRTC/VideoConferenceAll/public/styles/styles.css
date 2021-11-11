@@ -1,0 +1,13 @@
+#meetingRoom div {
+    text-align: center;
+}
+
+.videoContainer {
+    float: left;
+}
+
+#meetingRoom:after {
+    content: '';
+    display: block;
+    clear: both;
+}

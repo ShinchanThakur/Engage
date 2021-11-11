@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles/styles.css">
+    <title>Engage Mulituser Videocall</title>
+</head>
+<body>
+    <h1>Engage Mulituser Videocall</h1>
+
+    <div id="roomSelection" style="display: block;">
+        <label for="user name">Type User Name</label>
+        <input id="name" type="text">
+        <label for="room name">Type Room Name</label>
+        <input id="room" type="text">
+        <button id="register">Enter</button>
+    </div>
+
+    <div id="meetingRoom" style="display: none;"></div>
+
+    <script src="adapter-latest.js"></script>
+    <script src="kurento-utils.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+</body>
+</html>
