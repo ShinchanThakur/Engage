@@ -14,7 +14,7 @@ const express = require('express')
 const app = express()
 let http = require('http').Server(app)
 let minimist = require('minimist')
-let io = require('socket.io')(http)
+const io = require('socket.io')(http)
 const kurento = require('kurento-client')
 
 let kurentoClient = null
@@ -28,6 +28,7 @@ let argv = minimist(process.argv.slice(2), {
 })
 
 io.on('connection', socket => {
+    console.log('A user connected')
     socket.on('message', message => {
         switch(message.event) {
             case 'joinRoom':

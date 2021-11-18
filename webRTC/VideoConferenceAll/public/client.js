@@ -9,7 +9,7 @@ let btnRegister = document.getElementById('register')
 let roomName, userName
 let participants = {}
 
-let socket = io()
+const socket = io()
 
 btnRegister.onclick = () => {
     roomName = inputRoom.value

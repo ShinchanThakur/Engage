@@ -2,7 +2,7 @@
   "name": "VideoConferenceAll",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -12,6 +12,7 @@
   "dependencies": {
     "express": "^4.17.1",
     "kurento-client": "^6.16.0",
+    "kurento-utils": "^6.16.0",
     "minimist": "^1.2.5",
     "socket.io": "^4.3.2"
   }
