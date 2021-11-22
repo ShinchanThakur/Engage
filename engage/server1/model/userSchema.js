@@ -32,6 +32,14 @@ const userSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
+    todoList: [
+        {
+            text: {
+                type: String,
+                required: true
+            }
+        }
+    ],
     messages: [
         {
             name: {
@@ -98,6 +106,34 @@ userSchema.methods.addMessage = async function(name, email, phone, message) {
         this.messages = this.messages.concat({ name, email, phone, message })    //name: name and so on
         await this.save()
         return this.messages
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+userSchema.methods.addTodo = async function(text) {
+    try {
+        this.todoList = this.todoList.concat({ text })
+        await this.save()
+        return this.todoList
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+userSchema.methods.deleteTodo = async function(todo) {
+    try {
+        let index = -1
+        for(const a in this.todoList){
+            if(this.todoList[a].text === todo.text){
+                index = a
+                break
+            }
+        }
+        if(index > -1)
+            this.todoList.splice(index, 1)
+        await this.save()
+        return this.todoList
     } catch (error) {
         console.log(error)
     }

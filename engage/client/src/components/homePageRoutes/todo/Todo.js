@@ -9,7 +9,7 @@ function Todo({todos, removeTodo}) {
 
           <div className='icons'>
            <RiCloseCircleLine
-           onClick={()=> removeTodo(todo._id)}
+           onClick={()=> removeTodo(todo)}
            className='delete-icon'
            />
            

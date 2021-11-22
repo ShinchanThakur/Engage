@@ -10,22 +10,34 @@ function TodoForm(props) {
          inputRef.current.focus() 
      })
 
-    const handleSubmit = e => {
-        e.preventDefault() ;
+     const addTodoInDatabase = async(e) =>{
+        e.preventDefault()
+
         if ( input === "") {
             return;
         }
         const todo = {
             text: input 
         }
-        axios.post('http://localhost:5200/todos/add', todo)
-        .then(res => console.log(res.data));
 
-        props.onSubmit({
-            text: input
+        const res = await fetch('/todo/add', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(todo)
         })
-        
-        setInput('');
+        const data = await res.json()
+
+        if(!data) {
+            console.log("some error in fetching todo list")
+        } else {    
+            console.log(data)
+            props.onSubmit({
+                text: input
+            })
+            setInput('')
+        }
     }
 
     const handleChange = e => {
@@ -34,7 +46,7 @@ function TodoForm(props) {
 
     }
     return (
-        <form className='todo-form' onSubmit={handleSubmit}>
+        <form className='todo-form' onSubmit={addTodoInDatabase}>
             
             
          <input 

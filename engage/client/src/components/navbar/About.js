@@ -17,7 +17,6 @@ const About = () => {
                 credentials: "include"  //This allows us to include all details like cookies etc with the GET request
             })
             const data = await res.json()
-            // console.log(data)
             setUserData(data)
 
             if(res.status !== 200) {

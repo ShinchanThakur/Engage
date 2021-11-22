@@ -4,49 +4,59 @@ import TodoForm from './TodoForm'
 import axios from 'axios';
 import './todo.css'
 
-// let newTodos ;
 function TodoList() {
-    const[todos, setTodos] = useState([]) ;
+    const[todos, setTodos] = useState([])
+
+    const getTodos = async () => {
+        try {
+            const res = await fetch('/getdata', {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            const data = await res.json()
+            setTodos(data.todoList)
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    useEffect(() => {
+        getTodos()
+    }, [])
+
     const addTodo = todo => {
         
         if ( !todo.text || /^\s*$/.test(todo.text))
         {
             return;
         }
-         let newTodos = [todo, ...todos];
+        let newTodos = [todo, ...todos];
+        setTodos(newTodos);
+    }    
 
-        setTodos(newTodos);    
 
-    }
 
-    const [state, setState] = useState({});
-    useEffect(() => {
-        axios.get('http://localhost:5200/todos/')
-                .then(response => {
-                    setTodos(response.data);
-                    
-                })
-                .catch((error) => {
-                    console.log(error);
-                })
-                return () => {
-                    setState({}); // This worked for me
-                  };
-               
-    }, [todos])
-    
 
-const removeTodo = id => {
-    console.log(id + " frontend");
-    axios.delete('http://localhost:5200/todos/'+id)
-    .then(response => {
-       
+
+const removeTodo = async(todo) => {
+    console.log(todo._id + " frontend");
+
+    const res = await fetch('/todo/delete', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(todo)
     })
-
-    .catch((error) => {
-        console.log(error);
-    })
-   
+    const data = await res.json()
+    if(!data) {
+        console.log("some error in deleting todo")
+    } else {    
+        console.log(data)
+        setTodos(data)
+    }   
 }
 
 

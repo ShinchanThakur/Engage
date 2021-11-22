@@ -168,4 +168,38 @@ router.get('/logout', (req, res) => {
     res.status(200).send('User logout')
 })
 
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// TODO
+
+router.post('/todo/add', authenticate, async (req, res) => {
+    try {
+        const { text } = req.body
+        const currentUser = await User.findOne({_id: req.userID })      //here req has all details like _id because we have stored it during authentication
+
+        if(currentUser) {
+            const todoList = await currentUser.addTodo(text)
+            res.status(201).json({ message: "Todo added successfully"})
+        }
+
+    } catch (error) {
+        console.log(error)
+    }
+})
+
+router.post('/todo/delete', authenticate, async (req, res) => {
+    try {
+        const todo = req.body
+        const currentUser = await User.findOne({_id: req.userID })      //here req has all details like _id because we have stored it during authentication
+
+        if(currentUser) {
+            const todoList = await currentUser.deleteTodo(todo)
+            res.status(201).json(todoList)
+        }
+
+    } catch (error) {
+        console.log(error)
+    }
+})
+
 module.exports = router

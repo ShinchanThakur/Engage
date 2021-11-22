@@ -14,14 +14,10 @@ const Navbar = () => {
     const getUserLoginDetails = () => {
         let userLogin = localStorage.getItem('userVerified')
         let boolUserLogin = false
-        console.log(userLogin, 'before if')
         if(userLogin && userLogin !== 'undefined') {
             boolUserLogin = JSON.parse(userLogin)
-            console.log('inside if')
         }
-        console.log(boolUserLogin, 'before dispatch')
         dispatch({ type: "USER", payload: boolUserLogin})
-        console.log(state, 'dispatch done')
     }
 
     useEffect(() => {
@@ -29,7 +25,6 @@ const Navbar = () => {
     }, [])
 
     const LoginLogoutNavs = () => {
-        console.log(state, 'inside navs')
         if(state){
             return (
                 <>
