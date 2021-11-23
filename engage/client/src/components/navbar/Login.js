@@ -1,4 +1,4 @@
-import React, {useState, useContext, useEffect} from 'react'
+import React, {useState, useContext } from 'react'
 import loginImage from '../../images/signupImage.png'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { UserContext } from "../../App"

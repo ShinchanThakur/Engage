@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import Todo from './Todo';
 import TodoForm from './TodoForm'
-import axios from 'axios';
 import './todo.css'
 
 function TodoList() {

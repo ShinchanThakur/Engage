@@ -1,4 +1,3 @@
-import axios from 'axios';
 import React, {useState,useEffect, useRef} from 'react'
 
 function TodoForm(props) {
@@ -41,9 +40,7 @@ function TodoForm(props) {
     }
 
     const handleChange = e => {
-        
         setInput(e.target.value) ;
-
     }
     return (
         <form className='todo-form' onSubmit={addTodoInDatabase}>
@@ -58,9 +55,6 @@ function TodoForm(props) {
             ref={inputRef}
             className='todo-input'/>
             <button className='todo-button'>Add todo</button>
-        
-        
-       
         </form>
     )
 }

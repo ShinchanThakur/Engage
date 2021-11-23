@@ -14,6 +14,17 @@ const port = process.env.PORT || 5200;
 app.use(cors());
 app.use(express.json());
 
+
+ const chatRouter = require('./routes/chats');
+
+
+
+app.use('/chats', chatRouter);
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+// CHAT SECTION
+
 const io = new Server(server, {
   cors: {
       origin: "http://localhost:3000",
@@ -28,18 +39,6 @@ const connection = mongoose.connection;
 connection.once('open', () => {
   console.log("MongoDB database connection established successfully");
 })
-
-
-
- const infoRouter = require('./routes/infos');
- const todoRouter = require('./routes/todos');
- const chatRouter = require('./routes/chats');
- const seatRouter = require('./routes/seats');
-
-app.use('/infos', infoRouter);
-app.use('/todos', todoRouter);
-app.use('/chats', chatRouter);
-app.use('/seats', seatRouter);
 
 io.on("connection" , (socket) => {
   console.log(`User Connected: ${socket.id}`) ;
@@ -57,13 +56,12 @@ socket.on("send_message", (data) => {
 
 });
 
-
-
   socket.on("disconnect", () => {
       console.log("User Disconnected", socket.id);
   })
 });
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
 server.listen(port, () => {
   console.log("server running") ;
 });

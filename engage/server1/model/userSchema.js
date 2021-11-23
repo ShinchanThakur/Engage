@@ -40,6 +40,18 @@ const userSchema = new mongoose.Schema({
             }
         }
     ],
+    classes: [
+        {
+            subject: {
+                type: String,
+                required: true
+            },
+            date: {
+                type: Date,
+                default: Date.now
+            }
+        }
+    ],
     messages: [
         {
             name: {
@@ -110,7 +122,8 @@ userSchema.methods.addMessage = async function(name, email, phone, message) {
         console.log(error)
     }
 }
-
+////////////////////////////////////////////////////////////////////////////////////////////////
+// TODO LIST
 userSchema.methods.addTodo = async function(text) {
     try {
         this.todoList = this.todoList.concat({ text })
@@ -134,6 +147,26 @@ userSchema.methods.deleteTodo = async function(todo) {
             this.todoList.splice(index, 1)
         await this.save()
         return this.todoList
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+// CLASS BOOKING
+
+userSchema.methods.addClass = async function(info) {
+    try {
+        if(info.Maths){
+            this.classes = this.classes.concat({subject: "Maths"})
+        }
+        if(info.Physics){
+            this.classes = this.classes.concat({subject: "Physics"})
+        }
+        if(info.Chemistry){
+            this.classes = this.classes.concat({subject: "Chemistry"})
+        }
+        await this.save()
     } catch (error) {
         console.log(error)
     }

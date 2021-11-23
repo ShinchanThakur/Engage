@@ -4,15 +4,16 @@ import "react-datepicker/dist/react-datepicker.css";
 import Card from 'react-bootstrap/Card'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import SubjectPreference from './subjectPreference/SubjectPreference';
-import axios from 'axios';
 import Grid from "@material-ui/core/Grid";
 import Alert from 'react-bootstrap/Alert'
 
-const VaccinationDetails = props => {
+const VaccinationDetails = () => {
+// TYPE OF USER
     const[registeredUser, setRegisteredUser] = useState("") ;
-    const[MathsSeats, setMathsSeats] = useState() ;
-    const[PhysicsSeats, setPhysicsSeats] = useState() ;
-    const[ChemistrySeats, setChemistrySeats] = useState() ;
+
+    const[MathsTotalSeats, setMathsTotalSeats] = useState(0) ;
+    const[PhysicsTotalSeats, setPhysicsTotalSeats] = useState(0) ;
+    const[ChemistryTotalSeats, setChemistryTotalSeats] = useState(0) ;
     
 
     const [userName, setUserName] = useState("");
@@ -20,204 +21,188 @@ const VaccinationDetails = props => {
 
     const [disableMaths, setDisableMaths] = useState(true);
     const [Maths, setMath] = useState(false);
-    const [MathsClassList, setMathsClassList] = useState(0);
+    const [MathsOccupiedSeats, setMathsOccupiedSeats] = useState(0);
     const [limitMaths, setlimitMaths] = useState(false);
-    const [mathsStudents, setMathsStudents] = useState([]);
+    const [mathsStudentsArray, setMathsStudentsArray] = useState([]);
 
     const [disablePhysics, setDisablePhysics] = useState(true);
     const [Physics, setPhysics] = useState(false);
-    const [PhysicsClassList, setPhysicsClassList] = useState(0);
+    const [PhysicsOccupiedSeats, setPhysicsOccupiedSeats] = useState(0);
     const [limitPhysics, setlimitPhysics] = useState(false);
-    const [physicsStudents, setPhysicsStudents] = useState([]);
+    const [physicsStudentsArray, setPhysicsStudentsArray] = useState([]);
 
     const [disableChemistry, setDisableChemistry] = useState(true);
     const [Chemistry, setChemistry] = useState(false);
-    const [ChemistryClassList, setChemistryClassList] = useState(0);
+    const [ChemistryOccupiedSeats, setChemistryOccupiedSeats] = useState(0);
     const [limitChemistry, setlimitChemistry] = useState(false);
-    const [chemistryStudents, setChemistryStudents] = useState([]);
+    const [chemistryStudentsArray, setChemistryStudentsArray] = useState([]);
     // const[FullChemistry,isFullChemistry] = useState(false) ;
 
     const [handleSubmitPreference, sethandleSubmitPreference] = useState(true);
 
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//  DATE SETTER
 
     let newDate, day;
     var dayNames =  ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
     var monthNames = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"];
-    let month ;
-
-
-    const doubtSession = () => {
-
-        newDate = new Date();
-        
+    let month
+    const setDate = () => {
+        newDate = new Date();    
         day = dayNames[newDate.getDay()];
         month = monthNames[newDate.getMonth()] ;
-        // var tomorrow = setDate(newDate.getDate()+1) ;
             return <Alert width='2rem' variant='primary'>
                 Now book your class for <b> {day} (tomorrow) </b> doubt session
-            </Alert>
-
-        
-       
+            </Alert> 
+        setLimits()    //Declaring it here so that it runs after useEffect()
     }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+//  FUNCTIONS CALLED DURING FIRST TIME RENDERING
 
+    function setLimits() {
+        if (MathsOccupiedSeats >= MathsTotalSeats) setlimitMaths(true);
+        else if (MathsOccupiedSeats < MathsTotalSeats) setlimitMaths(false);
+        if (PhysicsOccupiedSeats >= PhysicsTotalSeats) setlimitPhysics(true);
+        else if (PhysicsOccupiedSeats < PhysicsTotalSeats) setlimitPhysics(false);
+        if (ChemistryOccupiedSeats >= ChemistryTotalSeats) setlimitChemistry(true);
+        else if (ChemistryOccupiedSeats < ChemistryTotalSeats) setlimitChemistry(false);
+    }
 
-    const [state, setState] = useState({});
+    const getTotalSeats = async () => {
+        try {
+            const res = await fetch('/getTotalSeats', {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            const data = await res.json()
+            setMathsTotalSeats ( data.maths) ;
+            setPhysicsTotalSeats (data.physics) ;
+            setChemistryTotalSeats(data.chemistry) ;
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    const getOccupiedSeats = async () => {
+        try {
+            const res = await fetch('/getOccupiedSeats', {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            const data = await res.json()
+            setMathsOccupiedSeats(data.maths);
+            setPhysicsOccupiedSeats(data.physics);
+            setChemistryOccupiedSeats(data.chemistry);
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    const getStudentClassList = async () => {
+        try {
+            const res = await fetch('/getStudentClassList', {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            const data = await res.json()
+            var studentM = [], studentP = [], studentC = [];
+                for (var i = 0; i < data.length; i++) {
+
+                    if (data[i].subject === "maths") {
+                        studentM.push(data[i].name + " - " + data[i].id)
+                    }
+                    else if (data[i].subject === "physics") {
+                        studentP.push(data[i].name + " - " + data[i].id)
+                    }
+                    else if (data[i].subject === "chemistry") {
+                        studentC.push(data[i].name + " - " + data[i].id)
+                    }
+                }
+                setMathsStudentsArray(studentM)
+                setPhysicsStudentsArray(studentP)
+                setChemistryStudentsArray(studentC)
+                
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
     useEffect(() => {
 
-       setRegisteredUser("admin") ;
-    //    let a ;
-    //    let b ;
-    //    let c ; 
-    //    if ( registeredUser === "admin")
-       {
-        axios.get('http://localhost:5200/seats/')
-                .then(response => {
-                
-                  setMathsSeats ( response.data[0].maths) ;
-                  setPhysicsSeats (response.data[0].physics) ;
-                  setChemistrySeats(response.data[0].chemistry) ;
-                //    a = MathsSeats, b = PhysicsSeats, c = ChemistrySeats ;
-         
-                })
-                .catch((error) => {
-                    console.log(error);
-                })
-       }
-      
-        // day = newDate.getDay();
-        // var hr = newDate.getHours();
-        // var mn = newDate.getMinutes();
-        // var sc = newDate.getSeconds();
-        // console.log(hr);
-       
+        setRegisteredUser("admin") ;
+        getTotalSeats()
+        getOccupiedSeats()
+        getStudentClassList()
+    }, [])
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//  STUDENT
 
-
-        var countMaths = 0, countPhysics = 0, countChemistry = 0;
-        axios.get('http://localhost:5200/infos/')
-            .then(response => {
-
-                var studentM = [], studentP = [], studentC = [];
-                for (var i = 0; i < response.data.length; i++) {
-
-                    if (response.data[i].Maths === true) {
-                        countMaths++;
-                        studentM.push(response.data[i].RegNo + " - " + response.data[i].userName)
-                    }
-                    if (response.data[i].Physics === true) {
-                        countPhysics++;
-                        studentP.push(response.data[i].RegNo + " - " + response.data[i].userName)
-                    }
-                    if (response.data[i].Chemistry === true) {
-                        countChemistry++;
-                        studentC.push(response.data[i].RegNo + " - " + response.data[i].userName)
-                    }
-
-
-                }
-                setMathsStudents(studentM);
-                setPhysicsStudents(studentP)
-                setChemistryStudents(studentC);
-
-                setMathsClassList(countMaths);
-                setPhysicsClassList(countPhysics);
-                setChemistryClassList(countChemistry);
-
-                axios.get('http://localhost:5200/seats/')
-                .then(response => {
-                
-                    if (countMaths >= response.data[0].maths) setlimitMaths(true);
-                    else if (countMaths < response.data[0].maths) setlimitMaths(false);
-                    if (countPhysics >= response.data[0].physics) setlimitPhysics(true);
-                    else if (countPhysics < response.data[0].physics) setlimitPhysics(false);
-                    if (countChemistry >= response.data[0].chemistry) setlimitChemistry(true);
-                    else if (countChemistry < response.data[0].chemistry) setlimitChemistry(false);
-                    // console.log(countChemistry+" " +response.data[0].chemistry)
-                //   setMathsSeats ( response.data[0].maths) ;
-                //   setPhysicsSeats (response.data[0].physics) ;
-                //   setChemistrySeats(response.data[0].chemistry) ;
-                //    a = MathsSeats, b = PhysicsSeats, c = ChemistrySeats ;
-         
-                })
-                .catch((error) => {
-                    console.log(error);
-                })
-
-           
-            // console.log(countChemistry + " " + ChemistrySeats) 
-            // console.log(a)
-
-            })
-            .catch((error) => {
-                console.log(error);
-            })
-
-            return () => {
-                setState({}); // This worked for me
-              };
-            
-
-    }, []);
-
-
-    const handleSubmit = (event) => {
-        if (userName != "" && RegNo != "") {
+    const handleSubmit = async() => {
+        if (Maths || Physics || Chemistry) {
             const info = {
-                userName: userName,
-                RegNo: RegNo,
                 Maths: Maths,
                 Physics: Physics,
                 Chemistry: Chemistry,
-
             }
-            axios.post('http://localhost:5200/infos/add', info)
-                .then(res => 
-                    console.log(res.data));
 
+            const res = await fetch('/addClass', {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(info)
+            })
+            //Put some exception handling
+            //Store class preferences in a separate database too
             sethandleSubmitPreference(false);
         }
         else {
-            alert("please enter the details")
+            alert("no classes selected")
         }
     }
 
 
 
-    const handleMaths = (event) => {
+    const handleMaths = () => {
         setDisableMaths(false); // to enable red button of cancel now
-        setMathsClassList(MathsClassList + 1);  // to increment the total count of maths students 
+        setMathsOccupiedSeats(MathsOccupiedSeats + 1);  // to increment the total count of maths students 
         setMath(true) // for that particular student set true as he clicked on book now 
     }
-    const cancelMaths = (event) => {
+    const cancelMaths = () => {
         setDisableMaths(true);
-        setMathsClassList(MathsClassList - 1);
+        setMathsOccupiedSeats(MathsOccupiedSeats - 1);
         setMath(0)
     }
 
-    const handlePhysics = (event) => {
+    const handlePhysics = () => {
         setDisablePhysics(false);
-        setPhysicsClassList(PhysicsClassList + 1);
+        setPhysicsOccupiedSeats(PhysicsOccupiedSeats + 1);
         setPhysics(true)
     }
-    const cancelPhysics = (event) => {
+    const cancelPhysics = () => {
         setDisablePhysics(true);
-        setPhysicsClassList(PhysicsClassList - 1);
+        setPhysicsOccupiedSeats(PhysicsOccupiedSeats - 1);
         setPhysics(false)
 
     }
 
-    const handleChemistry = (event) => {
+    const handleChemistry = () => {
         setDisableChemistry(false);
-        setChemistryClassList(ChemistryClassList + 1);
+        setChemistryOccupiedSeats(ChemistryOccupiedSeats + 1);
         setChemistry(true);
     }
-    const cancelChemistry = (event) => {
+    const cancelChemistry = () => {
         setDisableChemistry(true);
-        setChemistryClassList(ChemistryClassList - 1);
+        setChemistryOccupiedSeats(ChemistryOccupiedSeats - 1);
         setChemistry(false);
     }
 
@@ -230,122 +215,91 @@ const VaccinationDetails = props => {
         ))
     }
 
-    const totalSet = () => {
-        // console.log(event)
-        console.log("set total seat button pressed")
-        const total = {
-            maths:MathsSeats,
-            physics:PhysicsSeats,
-            chemistry:ChemistrySeats
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//  ADMIN RIGHTS
+
+const changeTotalSeats = async() => {
+    console.log("set total seat button pressed")
+    const total = {
+        maths:MathsTotalSeats,
+        physics:PhysicsTotalSeats,
+        chemistry:ChemistryTotalSeats
+    }
+    await fetch('/changeTotalSeats', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(total)
+    })  
+}
+
+    const deleteAllSeats = async() => {
+        console.log("delete clicked")
+        try {
+            await fetch('/deleteAllSeats', {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+        } catch (err) {
+            console.log(err)
         }
-        axios.get('http://localhost:5200/seats/deleteAll/')
-        .then(response => {
-            //  console.log(response)
-
-        })
-        .catch((error) => {
-            console.log(error);
-        })
-
-        axios.post('http://localhost:5200/seats/add', total)
-                .then(res => console.log(res.data));
-        
     }
-    const deleteStudents = (event) => {
-        //  if ( registeredUser === "admin" ) {
-     console.log("delete clicked")
-            axios.get('http://localhost:5200/infos/deleteAll/')
-                .then(response => {
-                    //  console.log(response)
-
-                })
-                .catch((error) => {
-                    console.log(error);
-                })
-        // }
-    }
-    // const totalPhysics = () => {
-    //     setTotalPhysics(PhysicsSeats) ;
-    // }
-    // const totalChemistry = () => {
-    //     setTotalChemistry(ChemistrySeats) ;
-    // }
-    {/* <Grid container spacing={24}>
-  <Grid item md={3}>
-    <Demo />
-  </Grid>
-  <Grid item md={3}>
-    <Demo />
-  </Grid>
-  <Grid item md={3}>
-    <Demo />
-  </Grid>
-</Grid> */}
-
 
     return (
         <div>
-
+            
             {
-                registeredUser === "adlmin" ?
+                registeredUser === "admLin" ?
                  <> 
-                
-                     
                                <input
                                style={{width:'10rem', margin:'2rem'}}
                                 type="text"
                                 placeholder="Set Maths Seats"
                                 className="form-control"
                                 id="formGroupExampleInput"
-                                value={MathsSeats}
+                                value={MathsTotalSeats}
                                 required
                                 onChange={(event) => {
-                                    setMathsSeats(event.target.value);
+                                    setMathsTotalSeats(event.target.value);
                                 }}
                             />
-                            {/* <Button variant="success"
-                            type="submit"
-                            onClick={totalMaths}
-                            style={{ width: '10rem' }}>set </Button> */}
-                
+                            
                                <input
                                style={{width:'10rem', margin:'2rem'}}
                                 type="text"
                                 placeholder="Set Physics Seats"
                                 className="form-control"
                                 id="formGroupExampleInput"
-                                value={PhysicsSeats}
+                                value={PhysicsTotalSeats}
                                 required
                                 onChange={(event) => {
-                                    setPhysicsSeats(event.target.value);
+                                    setPhysicsTotalSeats(event.target.value);
                                 }}
                             />
-                            {/* <Button variant="success"
-                            type="submit"
-                            onClick={totalPhysics}
-                            style={{ width: '10rem' }}>set</Button> */}
-
+                            
                                <input
                                style={{width:'10rem', margin:'2rem'}}
                                 type="text"
                                 placeholder="Set Chemistry Seats"
                                 className="form-control"
                                 id="formGroupExampleInput"
-                                value={ChemistrySeats}
+                                value={ChemistryTotalSeats}
                                 required
                                 onChange={(event) => {
-                                    setChemistrySeats(event.target.value);
+                                    setChemistryTotalSeats(event.target.value);
                                 }}
                             />
                             <button 
                            
-                            // onClick={() => totalSet}
-                            onClick={totalSet}
+                            onClick={changeTotalSeats}
                             style={{ width: '10rem' }}>set and go back</button>
 
                              <Button variant="danger"
                             type="submit"
-                            onChange={deleteStudents}
+                            onClick={deleteAllSeats}
                             style={{ width: '10rem' }}>Delete</Button>
 
 
@@ -356,12 +310,12 @@ const VaccinationDetails = props => {
                 <Grid container spacing={9}>
                             <Grid item md={3}>
                                 <Card style={{ width: '15rem', marginLeft: '10.5rem', marginTop: '2rem' }}>
-                                    <Card.Header style={{ backgroundColor: '#FDD2BF' }}><center><b> Maths Class List</b><br/>Total Seats : {MathsSeats} </center></Card.Header>
+                                    <Card.Header style={{ backgroundColor: '#FDD2BF' }}><center><b> Maths Class List</b><br/>Total Seats : {MathsTotalSeats} </center></Card.Header>
                                     <Card.Body>
                                         <blockquote className="blockquote mb-0">
     
                                             <div style={{ overflow: 'scroll', height: '9rem' }} >
-                                                <center>{printStudents(mathsStudents)}</center>
+                                                <center>{printStudents(mathsStudentsArray)}</center>
     
                                             </div>
     
@@ -373,12 +327,12 @@ const VaccinationDetails = props => {
                             {/*  */}
                             <Grid item md={3}>
                                 <Card style={{ width: '15rem', marginLeft: '10.5rem', marginTop: '2rem' }}>
-                                    <Card.Header style={{ backgroundColor: '#FDD2BF' }}><center><b> Physics Class List</b><br/>Total Seats : {PhysicsSeats} </center></Card.Header>
+                                    <Card.Header style={{ backgroundColor: '#FDD2BF' }}><center><b> Physics Class List</b><br/>Total Seats : {PhysicsTotalSeats} </center></Card.Header>
                                     <Card.Body>
                                         <blockquote className="blockquote mb-0">
     
                                             <div style={{ overflow: 'scroll', height: '9rem' }} >
-                                                <center>{printStudents(physicsStudents)}</center>
+                                                <center>{printStudents(physicsStudentsArray)}</center>
     
                                             </div>
     
@@ -391,12 +345,12 @@ const VaccinationDetails = props => {
                             <Grid item md={3}>
     
                                 <Card style={{ width: '15rem', marginLeft: '10.5rem', marginTop: '2rem' }}>
-                                    <Card.Header style={{ backgroundColor: '#FDD2BF' }}><center><b> Chemistry Class List</b><br/>Total Seats : {ChemistrySeats} </center></Card.Header>
+                                    <Card.Header style={{ backgroundColor: '#FDD2BF' }}><center><b> Chemistry Class List</b><br/>Total Seats : {ChemistryTotalSeats} </center></Card.Header>
                                     <Card.Body>
                                         <blockquote className="blockquote mb-0">
     
                                             <div style={{ overflow: 'scroll', height: '9rem' }} >
-                                                <center>{printStudents(chemistryStudents)}</center>
+                                                <center>{printStudents(chemistryStudentsArray)}</center>
     
                                             </div>
     
@@ -408,22 +362,15 @@ const VaccinationDetails = props => {
     
                         </Grid>
     
-                
-                
-                
-                
                  </> : 
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 <>
                 {handleSubmitPreference ?
                     <div>
                         <Alert width='2rem' variant='warning'>
                             *Note : Everyday at 3am fresh booking will start
                         </Alert>
-                        {doubtSession()}
-    
-    
-    
+                        {setDate()}
     
                         <Grid container spacing={9}>
                             <Grid item md={3}>
@@ -438,8 +385,8 @@ const VaccinationDetails = props => {
                                             <blockquote className="blockquote mb-0">
     
     
-                                                <center><b>Total Seats : {MathsSeats} </b></center>
-                                                <center><b>Filled Seats : {MathsClassList} </b></center>
+                                                <center><b>Total Seats : {MathsTotalSeats} </b></center>
+                                                <center><b>Filled Seats : {MathsOccupiedSeats} </b></center>
     
     
                                             </blockquote>
@@ -463,7 +410,7 @@ const VaccinationDetails = props => {
     
                                         </Card.Body>
                                         <Card.Header style={{ backgroundColor: '#EEEEEE' }}>
-                                            <b><center>{MathsClassList >= MathsSeats ? <a style={{ color: 'red' }}>FULL</a> : <a style={{ color: 'green' }}>AVAILABLE</a>}</center></b>
+                                            <b><center>{MathsOccupiedSeats >= MathsTotalSeats ? <a style={{ color: 'red' }}>FULL</a> : <a style={{ color: 'green' }}>AVAILABLE</a>}</center></b>
                                         </Card.Header>
                                     </Card>
                                 </div>
@@ -481,8 +428,8 @@ const VaccinationDetails = props => {
                                             <blockquote className="blockquote mb-0">
     
     
-                                                <center><b>Total Seats : {PhysicsSeats} </b></center>
-                                                <center><b>Filled Seats : {PhysicsClassList} </b></center>
+                                                <center><b>Total Seats : {PhysicsTotalSeats} </b></center>
+                                                <center><b>Filled Seats : {PhysicsOccupiedSeats} </b></center>
     
     
                                             </blockquote>
@@ -508,7 +455,7 @@ const VaccinationDetails = props => {
     
                                         </Card.Body>
                                         <Card.Header style={{ backgroundColor: '#EEEEEE' }}>
-                                            <b><center>{PhysicsClassList >= PhysicsSeats ? <a style={{ color: 'red' }}>FULL</a> : <a style={{ color: 'green' }}>AVAILABLE</a>}</center></b>
+                                            <b><center>{PhysicsOccupiedSeats >= PhysicsTotalSeats ? <a style={{ color: 'red' }}>FULL</a> : <a style={{ color: 'green' }}>AVAILABLE</a>}</center></b>
                                         </Card.Header>
     
                                     </Card>
@@ -526,8 +473,8 @@ const VaccinationDetails = props => {
                                             <blockquote className="blockquote mb-0">
     
     
-                                                <center><b>Total Seats : {ChemistrySeats} </b></center>
-                                                <center><b>Filled Seats : {ChemistryClassList} </b></center>
+                                                <center><b>Total Seats : {ChemistryTotalSeats} </b></center>
+                                                <center><b>Filled Seats : {ChemistryOccupiedSeats} </b></center>
     
     
                                             </blockquote>
@@ -555,7 +502,7 @@ const VaccinationDetails = props => {
                                         </Card.Body>
                                         <Card.Header style={{ backgroundColor: '#EEEEEE' }}>
                                            
-                                            <b><center>{ChemistryClassList === ChemistrySeats ? <a style={{ color: 'red' }}>FULL</a> : <a style={{ color: 'green' }}>AVAILABLE</a>}</center></b>
+                                            <b><center>{ChemistryOccupiedSeats === ChemistryTotalSeats ? <a style={{ color: 'red' }}>FULL</a> : <a style={{ color: 'green' }}>AVAILABLE</a>}</center></b>
                                         </Card.Header>
     
                                     </Card>
@@ -566,25 +513,7 @@ const VaccinationDetails = props => {
                         </Grid>
     
     
-    
-                        {/* <Grid container spacing={24}>
-      <Grid item md={3}>
-        <Demo />
-      </Grid>
-      <Grid item md={3}>
-        <Demo />
-      </Grid>
-      <Grid item md={3}>
-        <Demo />
-      </Grid>
-    </Grid> */}
-    
                        {/* list of students was here  */}
-    
-    
-    
-    
-    
     
                         <div style={{ marginLeft: '40rem', marginTop: '4rem' }} ><Button variant="success"
                             type="submit"
@@ -592,11 +521,7 @@ const VaccinationDetails = props => {
                             style={{ width: '10rem' }}>Final Submit</Button>
                         </div>
     
-    
-    
-    
-    
-                        {/* {mathsStudents}  */}
+                        {/* {mathsStudentsArray}  */}
     
     
                         {/* input field */}
@@ -643,7 +568,7 @@ const VaccinationDetails = props => {
     
     
                     :
-    
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
                     <div>
                        
                         <SubjectPreference
@@ -656,7 +581,6 @@ const VaccinationDetails = props => {
     
                     </div>
     
-    
                 }
                 </>
     
@@ -664,7 +588,6 @@ const VaccinationDetails = props => {
             }
   </div>
             
-
     );
 };
 

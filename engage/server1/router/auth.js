@@ -6,6 +6,8 @@ const authenticate = require('../middleware/authenticate')
 //Databse Connection
 require('../db/conn')
 const User = require('../model/userSchema')
+const Classes = require('../model/classSchema')
+const StudentClassList = require('../model/studentClassList')
 
 //Creating routes
 router.get('/', (req, res) => {         //If we write app.get in app.js then which would run?
@@ -112,7 +114,6 @@ router.post('/signin', async (req, res) => {
         if(userLogin) {
             const isMatch = await bcrypt.compare(password, userLogin.password)
             token = await userLogin.generateAuthToken()
-            console.log(token)
             const oneMonth = 25892000000    //milliseconds
             res.cookie('jwtoken', token, {
                 expires: new Date(Date.now() + oneMonth),
@@ -201,5 +202,67 @@ router.post('/todo/delete', authenticate, async (req, res) => {
         console.log(error)
     }
 })
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//  CLASS BOOKING
+//  STUDENT
+router.post('/addClass', authenticate, async (req, res) => {
+    try {
+        const info = req.body
+        const currentUser = await User.findOne({_id: req.userID })
+        if(currentUser) {
+            await currentUser.addClass(info)
+            await Classes.addSeats(info)
+            await StudentClassList.addClass(info, req.userID, req.rootUser.name)
+            res.status(201).json({ message: "Class registration successful"})
+        }
+    } catch (error) {
+        console.log(error)
+    }
+})
+
+router.get('/getTotalSeats', async (req, res) => {
+    console.log('getTotalSeats called')
+    const totalSeats = await Classes.getTotalSeats()      //Add exception handling
+    res.send(totalSeats)
+})
+
+router.get('/getOccupiedSeats', async (req, res) => {
+    console.log('getOccupiedSeats called')
+    const occupiedSeats = await Classes.getOccupiedSeats()    //Add exception handling
+    res.send(occupiedSeats)
+})
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//  CLASS BOOKING
+//  ADMIN
+
+router.post('/changeTotalSeats', async (req, res) => {
+    try {
+        const total = req.body
+        await Classes.changeTotalSeats(total)
+    } catch (error) {
+        console.log(error)
+    }
+})
+
+router.get('/deleteAllSeats', async (req, res) => {
+    console.log('deleteAllSeats called')
+//  SEND MESSAGE TO ALL USERS IN STUDENT CLASS LIST SO THAT THEY KNOW THAT THE CLASS HAS TO BOOKED AGAIN
+//  OR HAS BEEN CANCELLED
+    await StudentClassList.deleteAllSeats()    //Add exception handling
+    await Classes.resetOccupiedSeats()
+})
+
+router.get('/getStudentClassList', async (req, res) => {
+    console.log('getStudentClassList called')
+    const studentClassList = await StudentClassList.getStudentClassList()    //Add exception handling
+    res.send(studentClassList)
+})
+/////////////////////////////////////////////////////////////////////////////////
+
 
 module.exports = router
+
+//////////////////////////////////////////////////////////////////////////////////
+
+// REPLACE AUTHENTICATE AT UNNECESSARY PLACES WITH USERNAME AND USER ID IF POSSIBLE
