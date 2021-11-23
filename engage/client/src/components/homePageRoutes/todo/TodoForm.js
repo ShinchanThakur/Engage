@@ -31,7 +31,6 @@ function TodoForm(props) {
         if(!data) {
             console.log("some error in fetching todo list")
         } else {    
-            console.log(data)
             props.onSubmit({
                 text: input
             })

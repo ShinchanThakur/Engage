@@ -46,7 +46,7 @@ const Questions = () => {
     useEffect(() => {
 
         fetchQuizData();
-
+    // eslint-disable-next-line
     }, []);
 
     const getAnswer = (ans) => {

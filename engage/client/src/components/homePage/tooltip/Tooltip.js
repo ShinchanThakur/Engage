@@ -15,6 +15,7 @@ const Tooltip = (props) => {
     clearInterval(timeout);
     setActive(false);
   };
+  // eslint-disable-next-line
   const [state, setState] = useState({});
   useEffect(() => {
     return () => {

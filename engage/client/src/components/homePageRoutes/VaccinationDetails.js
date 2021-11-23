@@ -45,21 +45,23 @@ const VaccinationDetails = () => {
 
     let newDate, day;
     var dayNames =  ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-    var monthNames = ["January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"];
-    let month
+    // var monthNames = ["January", "February", "March", "April", "May", "June",
+    // "July", "August", "September", "October", "November", "December"];
+    // let month
     const setDate = () => {
         newDate = new Date();    
         day = dayNames[newDate.getDay()];
-        month = monthNames[newDate.getMonth()] ;
+        // month = monthNames[newDate.getMonth()] ;
             return <Alert width='2rem' variant='primary'>
                 Now book your class for <b> {day} (tomorrow) </b> doubt session
             </Alert> 
-        setLimits()    //Declaring it here so that it runs after useEffect()
     }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 //  FUNCTIONS CALLED DURING FIRST TIME RENDERING
+
+    const [totalSeatsFetched, setTotalSeatsFetched] = useState(false)
+    const [occupiedSeatsFetched, setOccupiedSeatsFetched] = useState(false)
 
     function setLimits() {
         if (MathsOccupiedSeats >= MathsTotalSeats) setlimitMaths(true);
@@ -82,6 +84,7 @@ const VaccinationDetails = () => {
             setMathsTotalSeats ( data.maths) ;
             setPhysicsTotalSeats (data.physics) ;
             setChemistryTotalSeats(data.chemistry) ;
+            setTotalSeatsFetched(true)
         } catch (err) {
             console.log(err)
         }
@@ -99,6 +102,7 @@ const VaccinationDetails = () => {
             setMathsOccupiedSeats(data.maths);
             setPhysicsOccupiedSeats(data.physics);
             setChemistryOccupiedSeats(data.chemistry);
+            setOccupiedSeatsFetched(true)
         } catch (err) {
             console.log(err)
         }
@@ -129,7 +133,6 @@ const VaccinationDetails = () => {
                 setMathsStudentsArray(studentM)
                 setPhysicsStudentsArray(studentP)
                 setChemistryStudentsArray(studentC)
-                
         } catch (err) {
             console.log(err)
         }
@@ -141,7 +144,14 @@ const VaccinationDetails = () => {
         getTotalSeats()
         getOccupiedSeats()
         getStudentClassList()
+        // eslint-disable-next-line
     }, [])
+
+    useEffect(() => {
+        if(totalSeatsFetched && occupiedSeatsFetched)
+            setLimits()         //Calling it here so that it runs after all values are fetched from backend
+    // eslint-disable-next-line
+    }, [totalSeatsFetched, occupiedSeatsFetched])
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //  STUDENT
@@ -154,7 +164,7 @@ const VaccinationDetails = () => {
                 Chemistry: Chemistry,
             }
 
-            const res = await fetch('/addClass', {
+            await fetch('/addClass', {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -207,7 +217,7 @@ const VaccinationDetails = () => {
     }
 
     const printStudents = (event) => {
-        if (event.length == 0) {
+        if (event.length === 0) {
             return <h5>EMPTY CLASS :( </h5>
         }
         return event.map((item, i) => (
@@ -399,7 +409,7 @@ const changeTotalSeats = async() => {
                                                     onClick={handleMaths}
                                                     style={{ width: '8rem' }}>Book NOW</Button>
                                                     :
-                                                    <Button variant="primary"
+                                                    <Button
                                                         // disable={disableMaths}
                                                         type="submit"
                                                         variant='danger'
@@ -444,7 +454,7 @@ const changeTotalSeats = async() => {
                                                     style={{ width: '8rem' }}>Book NOW</Button>
     
                                                     :
-                                                    <Button variant="primary"
+                                                    <Button 
                                                         type="submit"
                                                         variant='danger'
                                                         onClick={cancelPhysics}
@@ -489,7 +499,7 @@ const changeTotalSeats = async() => {
                                                     style={{ width: '8rem' }}>Book NOW</Button>
     
                                                     :
-                                                    <Button variant="primary"
+                                                    <Button 
                                                         type="submit"
                                                         variant='danger'
                                                         onClick={cancelChemistry}

@@ -1,11 +1,10 @@
 import React from "react";
-import chatImage from './chat.png'
 import { Link } from "react-router-dom";
 import Lottie from 'react-lottie'
 import animationData from './chat.json';
 
 
-const Chat = props => {
+const Chat = () => {
     const defaultOptions = {
         loop: false,
         autoplay: false,

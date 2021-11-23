@@ -40,7 +40,6 @@ function TodoList() {
 
 
 const removeTodo = async(todo) => {
-    console.log(todo._id + " frontend");
 
     const res = await fetch('/todo/delete', {
         method: "POST",
@@ -53,7 +52,6 @@ const removeTodo = async(todo) => {
     if(!data) {
         console.log("some error in deleting todo")
     } else {    
-        console.log(data)
         setTodos(data)
     }   
 }

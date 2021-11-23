@@ -17,7 +17,7 @@ const QuestionsCategory = () => {
         setCats(data.trivia_categories);
     }
 
-
+    // eslint-disable-next-line
     const [state, setState] = useState({});
     useEffect(() => {
         fetchQuestionCategories();

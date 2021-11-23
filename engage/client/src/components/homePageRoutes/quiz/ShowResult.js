@@ -32,6 +32,7 @@ const ShowResult = ({ questions, createMarkup, reset }) => {
   useEffect(() => {
     if(fullScore !== 0)
       setUserQuizMarks()
+    // eslint-disable-next-line
   }, [fullScore])
 
   return (

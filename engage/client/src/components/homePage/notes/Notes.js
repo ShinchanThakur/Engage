@@ -1,10 +1,9 @@
-import React from "react";
-import notesImage from './todo.jpeg'
+import React from "react"
 import { Link } from "react-router-dom";
 import Lottie from 'react-lottie'
 import animationData from './todo.json';
 
-const Notes = props => {
+const Notes = () => {
     const defaultOptions = {
         loop: true,
         autoplay: true,

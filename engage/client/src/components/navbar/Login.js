@@ -5,9 +5,8 @@ import { UserContext } from "../../App"
 
 const Login = () => {
 
-    let {state, dispatch} = useContext(UserContext)
-    // const context = useContext(contextValue)
-    // here we use our context api
+    // let {state, dispatch} = useContext(UserContext)
+    const dispatch = useContext(UserContext).dispatch
 
     const navigate = useNavigate()
     const [email, setEmail] = useState('')      //If we dont put '' inside brackets, then the browser will throw an error stating that the value of undefined has been changed to defined or something like that
@@ -37,8 +36,6 @@ const Login = () => {
                                                         //payload => extra info/message we want to pass
             localStorage.setItem('userVerified', JSON.stringify(true))
             window.alert("Login Successful")
-            console.log("Login Successful")
-            console.log(state, 'just after login')
             navigate("/")
         }
     }

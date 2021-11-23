@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect} from 'react'
 import Chat from '../chat/Chat'
 import Notes from '../notes/Notes'
 import VideoCall from '../videoCall/VideoCall'

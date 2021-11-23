@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 
 const Contact = () => {
     
-    const [userData, setUserData] = useState({})
+    const [userData, setUserData] = useState({name: "", email: "", phone: "", message: ""})
 
     const callGetDataFromBackend = async () => {
         try {
@@ -14,7 +14,6 @@ const Contact = () => {
                 }
             })
             const data = await res.json()
-            console.log(data)
             setUserData({name: data.name, email: data.email, phone: data.phone})
 
             if(res.status !== 200) {
@@ -122,9 +121,11 @@ const Contact = () => {
                                 </div>
                                 <form method="POST" id="contact_form">
                                     <div className="contact_form_name d-flex justify-content-between align-itmes-between">
-                                        <input type="text" id="contact_form_name" className="contact_form_name input_field" placeholder="Your name" name="name" value={ userData.name } onChange={handleInputs} required="true" />
-                                        <input type="email" id="contact_form_email" className="contact_form_email input_field" placeholder="Your email" name="email" value={ userData.email } onChange={handleInputs} required="true" />
-                                        <input type="number" id="contact_form_phone" className="contact_form_phone input_field" placeholder="Your phone number" name="phone" value={ userData.phone } onChange={handleInputs} required="true" />
+                                        <input type="text" id="contact_form_name" className="contact_form_name input_field" placeholder="Your name" name="name" value={ userData.name } onChange={handleInputs} required={true} />
+                                        {/* required = "true" => this generates an error, it tells us that we are providing string "true" instead of boolean true
+                                            To solve this error, we used {true}, this is a boolean */}
+                                        <input type="email" id="contact_form_email" className="contact_form_email input_field" placeholder="Your email" name="email" value={ userData.email } onChange={handleInputs} required={true} />
+                                        <input type="number" id="contact_form_phone" className="contact_form_phone input_field" placeholder="Your phone number" name="phone" value={ userData.phone } onChange={handleInputs} required={true} />
                                     </div>
                                     <div className="contact_form_text mt-5">
                                         <textarea className="text_field contact_form_message" placeholder="Message" name="message" value={ userData.message } onChange={handleInputs} cols="50" rows="7"></textarea>

@@ -1,11 +1,10 @@
 import React from "react";
-import ClassLogo from './class2.png';
 import { Link } from "react-router-dom";
 import Lottie from 'react-lottie'
 import animationData from './teacher.json';
 
 
-const BookClass = props => {
+const BookClass = () => {
 
     const defaultOptions = {
         loop: false,

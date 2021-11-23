@@ -1,5 +1,4 @@
 import React from 'react'
-import videoImage from './video.png'
 import Lottie from 'react-lottie'
 import animationData from './video.json';
 

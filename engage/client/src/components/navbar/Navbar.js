@@ -10,6 +10,8 @@ import {UserContext} from '../../App'
 const Navbar = () => {
 
     const {state, dispatch} = useContext(UserContext)
+    // const context = useContext(contextValue)
+    // here we use our context api
 
     const [userName, setUserName] = useState('')
 
@@ -43,6 +45,7 @@ const Navbar = () => {
 
     useEffect(() => {
         getUserLoginDetails()
+    // eslint-disable-next-line
     }, [])
 
     const LoginLogoutNavs = () => {

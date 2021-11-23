@@ -1,11 +1,10 @@
 import React from "react";
-import quizLogo from './quiz.png'
 import { Link } from "react-router-dom";
 import Lottie from 'react-lottie'
 import animationData from './quiz.json';
 
 
-const QuizLogo = props => {
+const QuizLogo = () => {
     const defaultOptions = {
         loop: false,
         autoplay: false,

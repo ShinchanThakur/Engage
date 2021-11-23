@@ -31,7 +31,9 @@ const About = () => {
 
     useEffect(() => {       
         callAboutPageFromBackend()      //We need to call this function because we cant make an async function directly in useEffect
-    }, [])      //We need to add this empty array so that useEffect runs only once, otherwise it will send infinite requests to the backend
+                                         //We need to add this empty array so that useEffect runs only once, otherwise it will send infinite requests to the backend
+    // eslint-disable-next-line
+    }, [])      
     return (
         <>
             <div className="container emp-profile border g-0 rounded shadow-sm mt-3">
