@@ -1,20 +1,30 @@
-import React from 'react'
-import Chat from '../chat/Chat';
-import Notes from '../notes/Notes';
-import VideoCall from '../videoCall/VideoCall';
+import React, {useEffect, useState} from 'react'
+import Chat from '../chat/Chat'
+import Notes from '../notes/Notes'
+import VideoCall from '../videoCall/VideoCall'
 import ToolTip from "../tooltip/Tooltip"
-import Calander from '../calander/Calander';
-import BookClass from '../bookClass/BookClass';
-import QuizLogo from '../quizLogo/QuizLogo';
+import Calander from '../calander/Calander'
+import BookClass from '../bookClass/BookClass'
+import QuizLogo from '../quizLogo/QuizLogo'
+import LastQuizMarks from '../LastQuizMarks'
 
-const Home = (props) => {
-  const { Email, handleLogout } = props;
+const Home = () => {
+
+  const getUserQuizDetails = () => {
+
+  }
+
+  useEffect(() => {
+    getUserQuizDetails()    
+  }, [])
   return (
     <>
       <section className="hero">
 
-        <div style={{ marginLeft: '75rem', marginTop: '1rem' }}><Calander /></div>
-
+        <div className="d-flex justify-content-between" style={{ margin: '1rem', marginTop: '1rem' }}>
+          <Calander />
+          <LastQuizMarks/>
+        </div>
 
         <div style={{ marginTop: '-10rem' }}>
           <center>

@@ -4,16 +4,35 @@ import './quiz.css';
 
 
 const ShowResult = ({ questions, createMarkup, reset }) => {
-  const [score, setScore] = useState(0);
+  const [score, setScore] = useState(0)
+  const [fullScore, setFullScore] = useState(0)
 
+  const setUserQuizMarks = async() => {
+    const percentage = 100 * score/fullScore
+    await fetch('/setUserQuizMarks', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            percentage 
+        })
+    })
+}
   useEffect(() => {
     if (questions.length > 0) {
       setScore(
         questions.filter((q) => q.userAnswer === q.correct_answer).length * 10
-      );
+      )
+      setFullScore(questions.length*10)
     }
     // eslint-disable-next-line
-  }, []);
+  }, [])
+
+  useEffect(() => {
+    if(fullScore !== 0)
+      setUserQuizMarks()
+  }, [fullScore])
 
   return (
     <div style={{fontSize:'1.2rem' , margin:'3rem'}}>
@@ -30,8 +49,9 @@ const ShowResult = ({ questions, createMarkup, reset }) => {
          <div style={{textAlign:'center',
         
         fontWeight:'bold',}}>
-            Full Score: {questions.length*10}
+            Full Score: {fullScore}
         </div>
+        
         <div style={{textAlign:'center',
       
     fontWeight:'bold'}}>

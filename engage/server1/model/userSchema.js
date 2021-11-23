@@ -52,6 +52,14 @@ const userSchema = new mongoose.Schema({
             }
         }
     ],
+    quizAttempted: {
+        type: Boolean,
+        default: false
+    },
+    lastQuizMarks: {
+        type: Number,
+        required: true
+    },
     messages: [
         {
             name: {
@@ -166,6 +174,19 @@ userSchema.methods.addClass = async function(info) {
         if(info.Chemistry){
             this.classes = this.classes.concat({subject: "Chemistry"})
         }
+        await this.save()
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////
+//  QUIZ
+
+userSchema.methods.addLastQuizMarks = async function(percentage) {
+    try {
+        this.quizAttempted = true
+        this.lastQuizMarks = percentage
         await this.save()
     } catch (error) {
         console.log(error)

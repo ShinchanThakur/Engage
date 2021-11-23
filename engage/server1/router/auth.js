@@ -259,7 +259,22 @@ router.get('/getStudentClassList', async (req, res) => {
     res.send(studentClassList)
 })
 /////////////////////////////////////////////////////////////////////////////////
+//  QUIZ DETAILS
 
+router.post('/setUserQuizMarks', authenticate, async (req, res) => {
+    try {
+        console.log('inside auth')
+        console.log(req.body)
+        const percentage = req.body.percentage
+        const currentUser = await User.findOne({_id: req.userID })
+        if(currentUser) {
+            await currentUser.addLastQuizMarks(percentage)
+            res.status(201).json({ message: "Last quiz marks added to user"})
+        }
+    } catch (error) {
+        console.log(error)
+    }
+})
 
 module.exports = router
 

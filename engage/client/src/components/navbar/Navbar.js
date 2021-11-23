@@ -1,7 +1,7 @@
 //Using bootstrap 5 => add js file link in index.html
 //When using bootstrap components, remember that in jsx, every tag should have closing 
 //(in html, some tags dont have closing like <input> or <hr>)
-import React, {useContext, useEffect} from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import 'bootstrap/dist/css/bootstrap.css'
 import { NavLink } from 'react-router-dom'
 import logo from '../../images/logo1.png'
@@ -10,6 +10,27 @@ import {UserContext} from '../../App'
 const Navbar = () => {
 
     const {state, dispatch} = useContext(UserContext)
+
+    const [userName, setUserName] = useState('')
+
+    const getCurrentUserDetails = async () => {
+      try {
+          const res = await fetch('/getdata', {
+              method: "GET",
+              headers: {
+                  "Content-Type": "application/json"
+              }
+          })
+          const data = await res.json()
+          setUserName(data.name)
+          localStorage.setItem('userName', data.name)
+          localStorage.setItem('quizAttempted', data.quizAttempted)
+          if(data.quizAttempted)
+            localStorage.setItem('lastQuizMarks', data.lastQuizMarks)
+      } catch (err) {
+          console.log(err)
+      }
+    }
 
     const getUserLoginDetails = () => {
         let userLogin = localStorage.getItem('userVerified')
@@ -26,6 +47,7 @@ const Navbar = () => {
 
     const LoginLogoutNavs = () => {
         if(state){
+            getCurrentUserDetails()
             return (
                 <>
                 <li className="nav-item">
@@ -52,6 +74,7 @@ const Navbar = () => {
            <nav className="navbar navbar-expand-lg navbar-light bg-light">
                 <div className="container-fluid">
                     <NavLink className="navbar-brand" to="#"><img src={logo} alt="logo" /></NavLink>
+                    {userName}
                     <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
                     </button>
