@@ -5,7 +5,7 @@ const http = require("http")
 const {Server} = require("socket.io") ;
 const server = http.createServer(app) ;
 require('dotenv').config();
-const port = process.env.PORT || 5200;
+const port = process.env.PORT || 3002;
 app.use(cors());
 app.use(express.json());
 
@@ -43,7 +43,7 @@ socket.on("send_message", (data) => {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 server.listen(port, () => {
-  console.log("server running") ;
+  console.log("server running on port:", port) ;
 });
 
 

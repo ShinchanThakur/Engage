@@ -2,7 +2,9 @@ import './App.css';
 import io from 'socket.io-client'
 import {useState, useEffect} from "react" ;
 import Chat from './Chat';
-const socket = io.connect("http://localhost:5200") ;
+// const chatPort = process.env.CHAT_PORT
+// console.log(chatPort)
+const socket = io.connect("http://localhost:3002") ;
 
 function ClientApp() {
   const [username, setUserName] = useState("")

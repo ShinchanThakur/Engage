@@ -23,7 +23,9 @@ import QuestionCategory from './components/homePageRoutes/quiz/QuestionCategory'
 import Questions from './components/homePageRoutes/quiz/Questions'
 import TodoList from './components/homePageRoutes/todo/TodoList';
 import ClientApp from './components/homePageRoutes/chatClient/App' ;
-
+//Environment Variables
+const dotenv = require("dotenv")
+dotenv.config({ path: './config.env'})
 export const UserContext = createContext()
 
 const Routing = () => {     //jsx Component

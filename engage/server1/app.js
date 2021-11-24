@@ -24,7 +24,7 @@ app.use(require('./router/auth'))
 
 const port = process.env.PORT || 3000
 app.listen(port, () => {
-    console.log('server started')
+    console.log('server started on port', port)
 })
 
 
