@@ -8,6 +8,7 @@ require('../db/conn')
 const User = require('../model/userSchema')
 const Classes = require('../model/classSchema')
 const StudentClassList = require('../model/studentClassList')
+const ChatRooms = require('../model/chatRoomSchema')
 
 //Creating routes
 router.get('/', (req, res) => {         //If we write app.get in app.js then which would run?
@@ -263,8 +264,6 @@ router.get('/getStudentClassList', async (req, res) => {
 
 router.post('/setUserQuizMarks', authenticate, async (req, res) => {
     try {
-        console.log('inside auth')
-        console.log(req.body)
         const percentage = req.body.percentage
         const currentUser = await User.findOne({_id: req.userID })
         if(currentUser) {
@@ -278,6 +277,51 @@ router.post('/setUserQuizMarks', authenticate, async (req, res) => {
 
 module.exports = router
 
-//////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+//  CHATROOMS in USER SCHEMA
+
+router.get('/getChatRoomList', authenticate, async(req, res) => {
+    console.log('getChatRoomList called')
+    const currentUser = await User.findOne({_id: req.userID })
+    const chatRoomList = await currentUser.getChatRoomList()
+    res.send(chatRoomList)
+})
+
+router.post('/addRoomNameToUsersChatRoomList', authenticate, async(req, res) => {
+    console.log('addRoomNameToUsersChatRoomList called')
+    const currentUser = await User.findOne({_id: req.userID })
+    const roomName = req.body.roomName
+    await currentUser.addChatRoom(roomName)
+    let chatRoom = await ChatRooms.findOne({roomName})
+    if(chatRoom === null) {
+        chatRoom = new ChatRooms({ roomName })
+        await chatRoom.save()
+        console.log('new chat room created')
+    }
+})
+
+/////////////////////////////////////////////////////////////////////////////////
+//  CHATROOMS
+
+router.post('/getChatsFromOneRoom', async(req, res) => {
+    console.log('getChatsFromOneRoom called')
+    const roomName = req.body.room
+    const chatRoom = await ChatRooms.findOne({roomName})
+    let chats
+    if(chatRoom)
+        chats = await chatRoom.getChats()
+    else
+        chats = []
+    res.send(chats)
+})
+
+router.post('/addChatToItsRoom', async(req, res) => {
+    const { room, author, message, time } = req.body
+    const chatRoom = await ChatRooms.findOne({roomName: room})
+    const chat = { author, message, time }
+    await chatRoom.addChat(chat)
+})
+
+/////////////////////////////////////////////////////////////////////////////////
 
 // REPLACE AUTHENTICATE AT UNNECESSARY PLACES WITH USERNAME AND USER ID IF POSSIBLE

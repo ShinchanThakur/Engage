@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react'
 import Chat from '../chat/Chat'
 import Notes from '../notes/Notes'
-import VideoCall from '../videoCall/VideoCall'
+// import VideoCall from '../videoCall/VideoCall'
 import ToolTip from "../tooltip/Tooltip"
 import Calander from '../calander/Calander'
 import BookClass from '../bookClass/BookClass'
@@ -26,10 +26,10 @@ const Home = () => {
           <LastQuizMarks/>
         </div>
 
-        <div style={{ marginTop: '-10rem' }}>
+        <div style={{ marginTop: '-15rem' }}>
           <center>
-            <ToolTip content="Video Session" direction="top">
-              <VideoCall /></ToolTip>
+            {/* <ToolTip content="Video Session" direction="top">
+              <VideoCall /></ToolTip> */}
 
             <ToolTip content="Chat Community" direction="top">
               <Chat /></ToolTip>

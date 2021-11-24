@@ -58,8 +58,16 @@ const userSchema = new mongoose.Schema({
     },
     lastQuizMarks: {
         type: Number,
-        required: true
+        required: false
     },
+    chatRooms: [
+        {
+            roomName: {
+                type: String,
+                required: true
+            }
+        }
+    ],
     messages: [
         {
             name: {
@@ -193,6 +201,36 @@ userSchema.methods.addLastQuizMarks = async function(percentage) {
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////
+//  CHATROOMS
+
+userSchema.methods.addChatRoom = async function(roomName) {
+    try {
+        let index = -1
+        for(const a in this.chatRooms){
+            if(this.chatRooms[a].roomName === roomName){
+                index = a
+                break
+            }
+        }
+        if(index === -1) {
+            this.chatRooms = this.chatRooms.concat({roomName})
+            await this.save()
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+userSchema.methods.getChatRoomList = function() {
+    try {
+        return this.chatRooms
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////
 //Creating collection with the above schema
 const User = mongoose.model('USER', userSchema)
 
