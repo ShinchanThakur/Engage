@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, { useState,useEffect} from 'react'
 import Chat from '../chat/Chat'
 import Notes from '../notes/Notes'
 // import VideoCall from '../videoCall/VideoCall'
@@ -9,21 +9,17 @@ import QuizLogo from '../quizLogo/QuizLogo'
 import LastQuizMarks from '../LastQuizMarks'
 
 const Home = () => {
-
-  const getUserQuizDetails = () => {
-
-  }
-
+  const [quizAttempted, setQuizAttempted] = useState(false)
   useEffect(() => {
-    getUserQuizDetails()    
-  }, [])
+    setQuizAttempted(JSON.parse(localStorage.getItem('quizAttempted')))
+  },[])
   return (
     <>
       <section className="hero">
 
         <div className="d-flex justify-content-between" style={{ margin: '1rem', marginTop: '1rem' }}>
           <Calander />
-          <LastQuizMarks/>
+          <LastQuizMarks quizAttempted={quizAttempted}/>
         </div>
 
         <div style={{ marginTop: '-15rem' }}>

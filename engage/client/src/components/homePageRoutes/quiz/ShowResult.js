@@ -9,6 +9,7 @@ const ShowResult = ({ questions, createMarkup, reset }) => {
 
   const setUserQuizMarks = async() => {
     const percentage = 100 * score/fullScore
+    localStorage.setItem('lastQuizMarks', percentage)
     await fetch('/setUserQuizMarks', {
         method: "POST",
         headers: {

@@ -6,8 +6,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import SubjectPreference from './subjectPreference/SubjectPreference';
 import Grid from "@material-ui/core/Grid";
 import Alert from 'react-bootstrap/Alert'
+import {useNavigate} from 'react-router-dom'
 
 const VaccinationDetails = () => {
+    const navigate = useNavigate()
 // TYPE OF USER
     const[registeredUser, setRegisteredUser] = useState("") ;
 
@@ -241,7 +243,9 @@ const changeTotalSeats = async() => {
             "Content-Type": "application/json"
         },
         body: JSON.stringify(total)
-    })  
+    })
+    alert('Changed Total Seats')
+    navigate('/')  
 }
 
     const deleteAllSeats = async() => {
@@ -256,13 +260,15 @@ const changeTotalSeats = async() => {
         } catch (err) {
             console.log(err)
         }
+        alert('Cancelled all classes')
+        navigate('/')
     }
 
     return (
         <div>
             
             {
-                registeredUser === "admLin" ?
+                registeredUser === "admlin" ?
                  <> 
                                <input
                                style={{width:'10rem', margin:'2rem'}}

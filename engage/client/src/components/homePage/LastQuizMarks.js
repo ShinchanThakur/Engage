@@ -1,18 +1,13 @@
 import React, {useState, useEffect} from "react";
 import Card from 'react-bootstrap/Card'
 
-const LastQuizMarks = () => {
-  const [quizAttempted, setQuizAttempted] = useState(false)
+const LastQuizMarks = (quizAttempted) => {
   const [lastQuizMarks, setLastQuizMarks] = useState(0)
-
-  useEffect(() => {
-    setQuizAttempted(JSON.parse(localStorage.getItem('quizAttempted')))
-  },[])
 
   useEffect(() => {
     if(quizAttempted)
       setLastQuizMarks(JSON.parse(localStorage.getItem('lastQuizMarks'))) 
-  },[quizAttempted])
+  },[])
 
   return (
     <>
